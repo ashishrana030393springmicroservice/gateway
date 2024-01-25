@@ -1,0 +1,29 @@
+management:
+  health:
+    redis:
+      enabled: false
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      mvc:
+        routes:
+          - id: route1
+            uri: lb://authorization-server/
+            predicates:
+              - Path=/users/**
+              - Method=*
+            filters:
+              - RewritePath=/users/(?<segment>.*), /$\{segment}
+
+          - id: route2
+            uri: lb://product-server/
+            predicates:
+              - Path=/products/**
+              - Method=*
+            filters:
+              - RewritePath=/products/(?<segement>.*), /$\{segement}
+
+server:
+  port: 9090
